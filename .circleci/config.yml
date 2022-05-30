@@ -1,26 +1,81 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+commands:
+   # Exercise - Rollback
+   destroy_environment:
+     steps:
+       - run:
+           name: Destroy environment
+           # ${CIRCLE_WORKFLOW_ID} is a Built-in environment variable 
+           # ${CIRCLE_WORKFLOW_ID:0:5} takes the first 5 chars of the variable CIRCLE_CI_WORKFLOW_ID 
+           when: on_fail
+           command: |
+             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5}
 jobs:
   say-hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
       - run:
           name: "Say hello"
-          command: "echo Hello, World!"
+          command: "echo Hello, World from project2 !"
+# create infra
+  create_infrastructure: 
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy --template-file infra-template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-west-2      
+  
+  # Config and Deployment 
+  configure_infrastructure: 
+    docker:
+      - image: python:3.7-alpine3.11 
+    steps:
+      - checkout
+      - add_ssh_keys:
+     ##     fingerprints: ["8a:10:07:82:39:27:1b:11:a8:1c:9f:02:ff:87:1c:70"] 
+      - run:
+          name: Install Ansible
+          command: apk add --update ansible
+            # Install Ansible
+      - run:
+          name: Run Playbook and Configure server
+          command: ansible-playbook main-remote.yml -i inventory -vvv
+            # Your command 
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+  # Exercise: Smoke Testing
+  smoke_test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run: apk add --update curl
+      - run:
+          name: smoke test
+          command: |
+            # return 1 
+            # for failing intentionally
+            URL="https://blog.udacity.com/"
+            # Test if website exists
+            if curl -s --head ${URL} 
+            then
+              return 0
+            else
+              return 1
+            fi
+      - destroy_environment      
+
 workflows:
-  say-hello-workflow:
+  cicd-workflow:
     jobs:
       - say-hello
+      #- create_infrastructure
+      #- configure_infrastructure
+      #- smoke_test
+          # requires:
+          #   - create_infrastructure
