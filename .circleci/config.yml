@@ -39,14 +39,14 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["8a:10:07:82:39:27:1b:11:a8:1c:9f:02:ff:87:1c:70"] 
+          fingerprints: ["91:cd:ad:51:1e:ef:96:e1:be:6d:4e:07:6b:96:da:c4"] 
       - run:
           name: Install Ansible
           command: apk add --update ansible
             # Install Ansible
       - run:
-          name: Run Playbook and Configure server
-          command: ansible-playbook main-remote.yml -i inventory -vvv
+          name: Circle-Step- To Run Playbook and Configure server
+          command: ansible-playbook main-remote.yml -i inventory 
             # Your command 
 
   # Exercise: Smoke Testing
@@ -74,8 +74,8 @@ workflows:
   cicd-workflow:
     jobs:
       - say-hello
-      - create_infrastructure
-      #- configure_infrastructure
+      #- create_infrastructure
+      - configure_infrastructure
       #- smoke_test
           # requires:
           #   - create_infrastructure
