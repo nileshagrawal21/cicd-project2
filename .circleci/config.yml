@@ -1,6 +1,6 @@
 version: 2.1
 commands:
-   # Exercise - Rollback
+   # Exercise for infra creation/destuction - Rollback
    destroy_environment:
      steps:
        - run:
