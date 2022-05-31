@@ -20,7 +20,7 @@ Resources:
       Properties: 
           AvailabilityZone: !Select [0, !GetAZs '']
           ImageId: ami-0ee8244746ec5d6d4 #ubuntu
-          InstanceType: t2.micro
+          InstanceType: t3.medium
           KeyName: kp-final 
           SecurityGroupIds:  
           - !Ref SecurityGroupEC2 
