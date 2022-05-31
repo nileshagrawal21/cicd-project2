@@ -74,8 +74,8 @@ workflows:
   cicd-workflow:
     jobs:
       - say-hello
-      #- create_infrastructure
-      - configure_infrastructure
+      - create_infrastructure
+      #- configure_infrastructure
       #- smoke_test
           # requires:
           #   - create_infrastructure
