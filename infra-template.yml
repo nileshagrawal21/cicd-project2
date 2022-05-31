@@ -21,7 +21,7 @@ Resources:
           AvailabilityZone: !Select [0, !GetAZs '']
           ImageId: ami-0ee8244746ec5d6d4 #ubuntu
           InstanceType: t2.micro
-          KeyName: kp-cicd-project2 
+          KeyName: kp-final 
           SecurityGroupIds:  
           - !Ref SecurityGroupEC2 
           SubnetId: subnet-0b78a6a22feaf7180

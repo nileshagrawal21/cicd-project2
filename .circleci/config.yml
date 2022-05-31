@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run:
           name: "Say hello"
-          command: "echo Hello, World from project2 !"
+          command: "echo Hello, World. What a releif !"
 # create infra
   create_infrastructure: 
     docker:
@@ -30,7 +30,7 @@ jobs:
           command: |
             aws cloudformation deploy --template-file infra-template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-              --region us-west-2      
+              --region us-west-2
   
   # Config and Deployment 
   configure_infrastructure: 
@@ -75,8 +75,10 @@ workflows:
   cicd-workflow:
     jobs:
       - say-hello
-      #- create_infrastructure
-      - configure_infrastructure
+      - create_infrastructure
+          requires:
+            - say-hello
+      #- configure_infrastructure
       #- smoke_test
           # requires:
           #   - create_infrastructure
