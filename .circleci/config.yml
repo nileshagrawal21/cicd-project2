@@ -39,8 +39,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["77:30:58:db:a9:42:9b:af:93:2b:43:df:6f:4f:a1:04"] 
-                        #["91:cd:ad:51:1e:ef:96:e1:be:6d:4e:07:6b:96:da:c4"]
+          fingerprints: ["6f:e9:75:53:67:44:7c:e9:75:2c:a4:81:9d:81:4e:eb"] 
       - run:
           name: Install Ansible
           command: apk add --update ansible
@@ -75,10 +74,10 @@ workflows:
   cicd-workflow:
     jobs:
       - say-hello
-      - create_infrastructure:
-          requires:
-            - say-hello
-      #- configure_infrastructure
+      #- create_infrastructure:
+      #    requires:
+      #      - say-hello
+      - configure_infrastructure
       #- smoke_test
       #     requires:
       #       - create_infrastructure
