@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Deploying infra from circle CI anf Aniblw]e]]]
+Description: Infra template-Deploying infra from circle CI and Ansible
 Resources:
   SecurityGroupEC2:
       Type: AWS::EC2::SecurityGroup
@@ -28,17 +28,3 @@ Resources:
           Tags: 
           - Key: Name
             Value: CiCd-Ansible-Ubuntu
-
-  EC2Linux:
-      Type: AWS::EC2::Instance
-      Properties: 
-          AvailabilityZone: !Select [0, !GetAZs '']
-          ImageId: ami-0ca285d4c2cda3300 #Linux
-          InstanceType: t3.micro
-          KeyName: kp-final 
-          SecurityGroupIds:  
-          - !Ref SecurityGroupEC2 
-          SubnetId: subnet-0b78a6a22feaf7180
-          Tags: 
-          - Key: Name
-            Value: CiCd-Ansible-Ubuntu          

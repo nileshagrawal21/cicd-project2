@@ -46,7 +46,16 @@ jobs:
           command: |
             apk add --update ansible
             apk add openssh-client
-            
+
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=CiCd-Ansible-Ubuntu" \
+              --output text)
+            echo "$BACKEND_AWS_PUBLIC_IP" >> inventory      
+
       - run:
           name: Circle-Step- To Run Playbook and Configure server
           command: ansible-playbook main-remote.yml -i inventory 
@@ -76,10 +85,10 @@ jobs:
 workflows:
   cicd-workflow:
     jobs:
-      # - say-hello
-      # - create_infrastructure:
-      #     requires:
-      #     - say-hello
+      - say-hello
+      - create_infrastructure:
+          requires:
+            - say-hello
       - configure_infrastructure
       #- smoke_test
       #     requires:
