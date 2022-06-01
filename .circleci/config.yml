@@ -49,7 +49,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - inventory                    
+            - project/inventory                    
   
   # Config and Deployment 
   configure_infrastructure: 
@@ -70,7 +70,7 @@ jobs:
 
       - run:
           name: Circle-Step- To Run Playbook and Configure server
-          command: ansible-playbook main-remote.yml -i ~/inventory 
+          command: ansible-playbook main-remote.yml -i ~/project/inventory 
             # Your command
 
       - destroy_environment
