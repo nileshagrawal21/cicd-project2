@@ -54,6 +54,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values=CiCd-Ansible-Ubuntu" \
               --output text)
+            echo "$BACKEND_AWS_PUBLIC_IP"
             echo "$BACKEND_AWS_PUBLIC_IP" >> inventory      
 
       - run:
