@@ -40,7 +40,12 @@ jobs:
               --filters "Name=tag:Name,Values=CiCd-Ansible-Ubuntu" \
               --output text)
             echo "$BACKEND_AWS_PUBLIC_IP"
-            echo "$BACKEND_AWS_PUBLIC_IP" >> inventory              
+            echo "$BACKEND_AWS_PUBLIC_IP" >> inventory
+
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - inventory                    
   
   # Config and Deployment 
   configure_infrastructure: 
@@ -49,7 +54,9 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["6f:e9:75:53:67:44:7c:e9:75:2c:a4:81:9d:81:4e:eb"] 
+          fingerprints: ["6f:e9:75:53:67:44:7c:e9:75:2c:a4:81:9d:81:4e:eb"]
+      - attach_workspace:
+          at: ~/     
       - run:
           name: Install Ansible
           # Install Ansible
@@ -59,7 +66,7 @@ jobs:
 
       - run:
           name: Circle-Step- To Run Playbook and Configure server
-          command: ansible-playbook main-remote.yml -i inventory 
+          command: ansible-playbook main-remote.yml -i ~/inventory 
             # Your command
 
       - destroy_environment
