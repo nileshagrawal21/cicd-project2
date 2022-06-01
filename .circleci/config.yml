@@ -42,8 +42,11 @@ jobs:
           fingerprints: ["6f:e9:75:53:67:44:7c:e9:75:2c:a4:81:9d:81:4e:eb"] 
       - run:
           name: Install Ansible
-          command: apk add --update ansible
-            # Install Ansible
+          # Install Ansible
+          command: |
+            apk add --update ansible
+            apk add openssh-client
+            
       - run:
           name: Circle-Step- To Run Playbook and Configure server
           command: ansible-playbook main-remote.yml -i inventory 
