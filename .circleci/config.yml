@@ -31,6 +31,16 @@ jobs:
             aws cloudformation deploy --template-file infra-template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-west-2
+
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Name,Values=CiCd-Ansible-Ubuntu" \
+              --output text)
+            echo "$BACKEND_AWS_PUBLIC_IP"
+            echo "$BACKEND_AWS_PUBLIC_IP" >> inventory              
   
   # Config and Deployment 
   configure_infrastructure: 
@@ -46,16 +56,6 @@ jobs:
           command: |
             apk add --update ansible
             apk add openssh-client
-
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
-      #         --query 'Reservations[*].Instances[*].PublicIpAddress' \
-      #         --filters "Name=tag:Name,Values=CiCd-Ansible-Ubuntu" \
-      #         --output text)
-      #       echo "$BACKEND_AWS_PUBLIC_IP"
-      #       echo "$BACKEND_AWS_PUBLIC_IP" >> inventory      
 
       - run:
           name: Circle-Step- To Run Playbook and Configure server
@@ -89,13 +89,13 @@ jobs:
 workflows:
   cicd-workflow:
     jobs:
-      #- say-hello
-      #- create_infrastructure:
-      #    requires:
-      #      - say-hello
-      - configure_infrastructure
-      #    requires:
-      #      - create_infrastructure
+      - say-hello
+      - create_infrastructure:
+         requires:
+           - say-hello
+      - configure_infrastructure:
+          requires:
+            - create_infrastructure
       #- smoke_test
       #     requires:
       #       - create_infrastructure
