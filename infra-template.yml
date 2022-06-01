@@ -10,7 +10,11 @@ Resources:
           - IpProtocol: tcp
             FromPort: 22
             ToPort: 22
-            CidrIp: 0.0.0.0/0  
+            CidrIp: 0.0.0.0/0
+          - IpProtocol: tcp
+            FromPort: 3030
+            ToPort: 3030
+            CidrIp: 0.0.0.0/0    
           Tags: 
           - Key: Name
             Value: SG from CICD for web server www
